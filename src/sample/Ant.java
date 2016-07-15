@@ -7,6 +7,7 @@ public class Ant
 {
     double x;
     double y;
+    boolean aggravated = false;
 
     public Ant(double x, double y)
     {

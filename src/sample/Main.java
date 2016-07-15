@@ -19,7 +19,8 @@ public class Main extends Application {
 
     static final int WIDTH = 800;
     static final int HEIGHT = 600;
-    static final int ANT_COUNT = 1000;
+    static final int ANT_COUNT = 100;
+    static final int MIN_DISTANCE = 10;
 
     static ArrayList<Ant> ants = new ArrayList<>();
 
@@ -40,7 +41,14 @@ public class Main extends Application {
         context.clearRect(0, 0, WIDTH, HEIGHT);
         for(Ant ant :ants)
         {
-            context.setFill(Color.BLACK);
+            if (ant.aggravated)
+            {
+                context.setFill(Color.RED);
+            }
+            else
+            {
+                context.setFill(Color.BLACK);
+            }
             context.fillOval(ant.x, ant.y, 5, 5);
         }
     }
@@ -49,6 +57,7 @@ public class Main extends Application {
     {
         ant.x += (Math.random() * 2)-1;
         ant.y += (Math.random() * 2)-1;
+        aggravateAnt(ant);
         try
         {
             Thread.sleep(1);
@@ -57,6 +66,27 @@ public class Main extends Application {
             e.printStackTrace();
         }
         return ant;
+    }
+
+    static void aggravateAnt(Ant ant)
+    {
+        int count =0;
+        for (Ant a : ants)
+        {
+            if (((Math.abs(a.x-ant.x))<MIN_DISTANCE) && ((Math.abs(a.y-ant.y))<MIN_DISTANCE))
+            {
+                count++;
+            }
+        }
+        if (count > 1)
+        {
+            ant.aggravated = true;
+        }
+        else
+        {
+            ant.aggravated = false;
+        }
+
     }
 
     static void moveAnts()
@@ -94,6 +124,7 @@ public class Main extends Application {
             public void handle(long now)
             {
                 moveAnts();
+
                 drawAnts(context);
                 fpsLabel.setText(fps(now) +"");
                 lastTimeStamp = now;
